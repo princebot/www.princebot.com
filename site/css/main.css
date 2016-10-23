@@ -1,0 +1,93 @@
+/*****************************************************************************/
+/*
+/* Containers
+/*
+/*****************************************************************************/
+
+body, html {
+  height: 100%;
+  margin: 0;
+  background-color: #333;
+}
+
+#flexContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70%;
+}
+
+#bodyText {
+  font-family: Raleway, sans-serif;
+  font-size: .9em;
+  line-height: 1.4em;
+  color: #EC407A;
+  width: 30em;
+}
+
+#links {
+  margin: 1.5em auto 0;
+  font-size: .88em;
+  color: #5BBDF2;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+/*****************************************************************************/
+/*
+/* Text
+/*
+/*****************************************************************************/
+
+h1 {
+  font-size: 1.9em;
+  font-weight: normal;
+  font-family: "Michroma", sans-serif;
+  letter-spacing: 0.075em;
+  margin-bottom: 0.8em;
+}
+
+p {
+  text-align: justify;
+  text-justify: auto;
+}
+
+strong {
+  font-weight: bold;
+  margin: auto 0.175em;
+  letter-spacing: 0.04em;
+}
+
+/*****************************************************************************/
+/*
+/* Links and images
+/*
+/*****************************************************************************/
+
+
+a:link, a:visited {
+  color: #5BBDF2;
+  text-decoration: none;
+}
+
+a:hover { color: #B4D8EB; }
+
+img.smiley {
+  margin: 0 0.3em;
+  height: 1em;
+  width: 1em;
+}
+
+/*****************************************************************************/
+/*
+/* Mobile display overrides
+/*
+/*****************************************************************************/
+
+@media screen and (max-width: 35em) {
+
+  #bodyText { width: 89%; }
+  #links    { letter-spacing: initial; }
+
+  strong { margin: auto; }
+}

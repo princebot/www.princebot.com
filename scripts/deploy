@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Name:     deploy
+# Author:   prince@princebot.com
+# Source:   https://github.com/princebot/www.princebot.com
+# Synopsis: Fetch, build, and start www.princebot.com server.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+set -e
+
+declare -r PROG="deploy"
+
+declare -r USAGE="
+usage: deploy [--port]
+Fetch, build, and start www.princebot.com server.
+
+Using a privileged port requires passwordless sudo access.
+
+   --port
+       Set the HTTP port (default 80).
+"
+
+declare -r SITE="www.princebot.com"
+
+
+main() {
+    local -i port=80
+
+    while (($#)); do
+        case $1 in
+            -h|-help|--help)
+                printf -- "${USAGE}\n" >&2
+                exit 0
+                ;;
+            --port)
+                [[ -n $2 ]] || die "--port option present but no value given"
+                port=$2
+                ((port > 0)) || die "invalid port number"
+                shift 2
+                ;;
+            *)
+                die "invalid argument '$1'\n${USAGE}"
+                ;;
+        esac
+    done
+
+    cd_temp_dir || die "cannot create temporary directory"
+
+    # If docker is not installed, try to install it if this is a macOS system;
+    # otherwise, just quit.
+    if ! docker_is_installed; then
+        if ! is_macOS; then
+            local uri="https://docs.docker.com/engine/installation/"
+            die "install docker from ${uri} and rerun this script"
+        fi
+        install_docker_for_macOS || die "cannot download docker installer"
+        ok_to_continue || die "installation canceled"
+    fi
+
+    clone_and_enter_repo || die "cannot clone www.princebot.com repo"
+
+    # Build a docker image for the server.
+    docker build -t ${SITE}:latest . || die "cannot build docker image"
+
+    start_server ${port} || die "cannot start server"
+}
+
+
+die() {
+    printf -- "${PROG}: $@\n" >&2
+    exit 1
+}
+
+
+cd_temp_dir() {
+    local suffix="$(random_string)"
+    local tmp="./tmp.${suffix}"
+    mkdir -p "${tmp}" && cd "${tmp}"
+}
+
+
+random_string() {
+    printf -- "$(LC_CTYPE=C tr -d -c '[:alnum:]' </dev/urandom | head -c 8)"
+}
+
+
+docker_is_installed() {
+    command -v docker &>/dev/null
+}
+
+
+is_macOS() {
+    [[ $(uname -s 2>/dev/null) == [Dd]arwin ]]
+}
+
+
+install_docker_for_macOS() {
+    local dmg="$(pwd -P)/install_docker.dmg"
+    trap "rm -f -- $(pwd -P)/{dmg}" EXIT
+
+    curl -o ${dmg} -- "https://download.docker.com/mac/stable/Docker.dmg"
+    (($? == 0)) || return 1
+    open ${dmg}    
+}
+
+
+ok_to_continue() {
+    local resp
+    read -r -p "continue? (y/n): " $resp
+    [[ ${resp} =~ [yY] ]]
+}
+
+
+clone_and_enter_repo() {
+    git clone https://github.com/princebot/${SITE} && cd ${SITE}
+}
+
+
+start_server() {
+    local -i port=$1
+    ((port == 0)) && die "start_server(): invalid port argument"
+
+    local prefix
+    ((port < 1024)) && prefix="sudo"
+
+    local name="site.$(random_string)"
+
+    ${prefix} docker run -d      \
+        --name ${name}           \
+        --publish ${port}:8080   \
+        --restart=unless-stopped \
+        www.princebot.com serve
+}
+
+main "$@"
