@@ -1,0 +1,11 @@
+[Unit]
+Description=Serve www.princebot.com
+After=network.target
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run -t -a STDOUT -a STDERR -p 80:8080 --rm www.princebot.com serve
+
+[Install]
+WantedBy=multi-user.target
