@@ -1,69 +1,59 @@
 /*****************************************************************************/
-/*
 /* Containers
-/*
 /*****************************************************************************/
 
 body, html {
+  background-color: #333;
   height: 100%;
   margin: 0;
-  background-color: #333;
 }
 
-#flexContainer {
-  display: flex;
+.flexContainer {
   align-items: center;
-  justify-content: center;
+  display: flex;
   height: 70%;
+  justify-content: center;
 }
 
-#bodyText {
+.content {
+  color: #EC407A;
   font-family: Raleway, sans-serif;
   font-size: .9em;
   line-height: 1.4em;
-  color: #EC407A;
+  text-align: justify;
+  text-justify: auto;
   width: 30em;
 }
 
-#links {
-  margin: 1.5em auto 0;
-  font-size: .88em;
+.links {
   color: #5BBDF2;
+  font-family: Raleway, sans-serif;
+  font-size: .88em;
   letter-spacing: 0.3em;
+  line-height: 1.4em;
+  margin: 1.5em auto 0;
   text-align: center;
 }
 
+
 /*****************************************************************************/
-/*
 /* Text
-/*
 /*****************************************************************************/
 
 h1 {
+  font-family: "Michroma", sans-serif;
   font-size: 1.9em;
   font-weight: normal;
-  font-family: "Michroma", sans-serif;
   letter-spacing: 0.075em;
   margin-bottom: 0.8em;
 }
 
-p {
-  text-align: justify;
-  text-justify: auto;
-}
+strong { font-weight: bold; }
 
-strong {
-  font-weight: bold;
-  margin: auto 0.175em;
-  letter-spacing: 0.04em;
-}
 
 /*****************************************************************************/
-/*
 /* Links and images
-/*
 /*****************************************************************************/
-
 
 a:link, a:visited {
   color: #5BBDF2;
@@ -72,22 +62,18 @@ a:link, a:visited {
 
 a:hover { color: #B4D8EB; }
 
-img.smiley {
-  margin: 0 0.3em;
+.smiley {
   height: 1em;
+  margin: 0 0.3em;
   width: 1em;
 }
 
+
 /*****************************************************************************/
-/*
-/* Mobile display overrides
-/*
+/* Mobile-display overrides
 /*****************************************************************************/
 
 @media screen and (max-width: 35em) {
-
-  #bodyText { width: 89%; }
-  #links    { letter-spacing: initial; }
-
-  strong { margin: auto; }
+  .content { width: 89%; }
+  .links    { letter-spacing: initial; }
 }
